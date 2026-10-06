@@ -6,7 +6,7 @@
     <title>快速开始 — Colorful 语言文档</title>
     <meta
       name="description"
-      content="Colorful 语言从零开始教程：准备环境、安装工具链与 VSCode 插件、写第一个程序、编译运行，以及语言速览、21 个标准库模块、GUI 编程、测试、包管理与工具链参数参考。"
+      content="Colorful 语言从零开始教程：准备环境、安装工具链与 VSCode 插件、写第一个程序、编译运行，以及项目简介（为什么创建、用什么实现、能做什么）、语言速览、19 个标准库模块与 GUI 编程、测试、包管理与工具链参数参考。"
     />
     <meta name="theme-color" content="#1450c8" />
     <link rel="icon" type="image/svg+xml" href="assets/img/colorful.svg" />
@@ -56,6 +56,11 @@
     <div class="wrap docs">
       <aside class="docs-sidebar">
         <nav>
+          <h4>概览</h4>
+          <a href="#about">项目简介</a>
+          <a href="#why">为什么要做 Colorful</a>
+          <a href="#built-with">用什么实现</a>
+          <a href="#uses">能做什么</a>
           <h4>入门</h4>
           <a href="#start">从零开始</a>
           <a href="#first-program">第一个程序</a>
@@ -92,6 +97,135 @@
           <strong>最短路径：</strong>只装 VSCode 插件就够了 —— 插件内已经打包了编译器、语言服务器、
           格式化器、测试器、包管理器、runtime 与标准库。
         </div>
+
+        <h2 id="about">项目简介</h2>
+        <p>
+          Colorful 是一门<b>静态类型、AOT 编译</b>的编程语言。源文件（<code>.cf</code>）由
+          <code>colorc</code> 编译成原生机器码，默认把 runtime 静态链接进产物 ——
+          一个程序就是<b>一个可执行文件</b>，没有解释器、没有虚拟机，也不要求目标机器预装任何东西。
+          语言内置 21 个模块：19 个标准库模块，加上负责界面的 <code>gui</code> 与 <code>widgets</code>。
+        </p>
+
+        <h3 id="why">为什么要做 Colorful</h3>
+        <p>它想同时满足四件在别处常常要分开取舍的事：</p>
+        <ol>
+          <li>
+            <b>脚本的书写手感，原生的运行结果。</b>缩进即块、类型推断、f-string，写起来接近脚本语言；
+            产物却是纯机器码，交付时只要拷一个文件。
+          </li>
+          <li>
+            <b>语言与界面一起设计。</b>桌面 GUI 通常要额外绑定第三方框架，还要自己处理
+            「绘制与命中测试不一致」这类问题。Colorful 把界面做成语言自带的模块：布局是纯函数，
+            绘制复用同一批原生原语，于是点到的位置和画出来的位置天然一致。
+          </li>
+          <li>
+            <b>工程链一次配齐。</b>小语言常见的困境是「语法能用，但工具没有」——没有语言服务器、
+            没有测试器、没有包管理。Colorful 从第一版就把编译器、语言服务器、格式化器、测试运行器、
+            包管理器、runtime 打包器与文档生成器一起交付。
+          </li>
+          <li>
+            <b>标准库看得懂、改得动。</b>标准库以明文 <code>.cf</code> 提供，而不是只给一个黑盒：
+            可以直接阅读实现，必要时替换或扩展。
+          </li>
+        </ol>
+        <div class="callout">
+          <strong>一条贯彻始终的设计约束：</strong>模块不持有全局可变状态。应用状态统一放在
+          <code>gui.state_*</code> 这类显式位置，所以「状态放在哪、什么时候变」在代码里一眼可见，
+          不会藏在某个 import 的副作用里。
+        </div>
+
+        <h3 id="built-with">用什么实现</h3>
+        <p>Colorful 是一个「部分自举」的项目：工具链用系统语言实现，标准库与界面模块用 Colorful 自己写。</p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>部分</th>
+                <th>实现语言 / 依赖</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>编译器 <code>colorc</code></td>
+                <td>C++20</td>
+                <td>
+                  词法 → 语法 → 类型检查 → HIR → MIR → 后端；LLVM 后端驱动
+                  <code>clang</code>/<code>llc</code>，也可以换用自研的 C 后端（只需要一个 C 编译器）
+                </td>
+              </tr>
+              <tr>
+                <td>runtime</td>
+                <td>C11</td>
+                <td>字符串、容器、文件、网络、时间等基础能力，对外 ABI 为 <code>c11-colorful-0.1</code></td>
+              </tr>
+              <tr>
+                <td>GUI 原生层</td>
+                <td>C++</td>
+                <td>Windows 上直接使用 Direct2D、DirectWrite 与 WIC，文本与图形都走系统原生栈</td>
+              </tr>
+              <tr>
+                <td>标准库（19 个模块）</td>
+                <td>Colorful</td>
+                <td>
+                  <code>core</code> <code>json</code> <code>regex</code> <code>http</code>
+                  <code>path</code> <code>encoding</code> … 全部是明文 <code>.cf</code>
+                </td>
+              </tr>
+              <tr>
+                <td><code>gui</code> / <code>widgets</code></td>
+                <td>Colorful</td>
+                <td>Material 3 组件的声明式描述、布局与链式修饰方法</td>
+              </tr>
+              <tr>
+                <td>工具链（LSP / 格式化 / 测试 / 包管理 / 文档）</td>
+                <td>C++20</td>
+                <td>复用同一套编译器前端，所以编辑器里的诊断与命令行输出完全一致</td>
+              </tr>
+              <tr>
+                <td>VSCode 插件</td>
+                <td>TypeScript</td>
+                <td>通过 LSP 与 <code>colorlsp</code> 通信，并内置同一套工具链</td>
+              </tr>
+              <tr>
+                <td>构建系统</td>
+                <td>CMake ≥ 3.20</td>
+                <td>Windows / macOS / Linux 同源构建</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3 id="uses">能做什么</h3>
+        <ul>
+          <li>
+            <b>命令行工具与脚本</b>：单文件产物，拷走就能跑；<code>cli</code>、<code>path</code>、
+            <code>env</code>、<code>fs</code> 覆盖常见需求。
+          </li>
+          <li>
+            <b>HTTP 服务</b>：<code>http</code> 与 <code>net</code> 提供服务器与客户端能力，
+            示例见 <code>examples/http_server.cf</code>。
+          </li>
+          <li>
+            <b>桌面 GUI 应用</b>：<code>gui</code> + <code>widgets</code> 渲染 Material 3 界面，
+            包含命中测试、滚动、字体与深浅色主题。
+          </li>
+          <li>
+            <b>数据处理</b>：<code>json</code>、<code>regex</code>、<code>collections</code>、
+            <code>strings</code>、<code>encoding</code>。
+          </li>
+          <li>
+            <b>教学与语言实验</b>：从词法到代码生成的整条流水线都在 <code>compiler/</code>，
+            配合 <code>--emit tokens | ast | hir | mir</code> 可以直接观察每个阶段。
+          </li>
+        </ul>
+
+        <h3 id="status">当前状态</h3>
+        <p>
+          0.1.0 是首个公开版本：工具链、标准库、GUI 与编辑器支持都已可用。二进制目前只提供
+          Windows x64，macOS 与 Linux 可从源码构建；语言层面的已知边界列在
+          <a href="#troubleshooting">常见问题</a>。
+        </p>
 
         <h2 id="start">从零开始</h2>
 

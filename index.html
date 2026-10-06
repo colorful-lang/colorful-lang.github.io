@@ -6,7 +6,7 @@
     <title>Colorful 语言 — 静态类型、AOT 编译到原生、自带 Material 3 GUI</title>
     <meta
       name="description"
-      content="Colorful 是一门静态类型的编译型语言：源码编译为原生机器码，标准库内置 21 个模块，gui 与 widgets 用声明式写法直接渲染 Material 3 界面。附带 colorc、colorlsp、colorfmt、colortest、colorpkg 完整工具链与 VSCode 支持。"
+      content="Colorful 是一门静态类型的编译型语言：源码编译为原生机器码，内置 21 个模块（19 个标准库模块 + gui/widgets），gui 与 widgets 用声明式写法直接渲染 Material 3 界面。附带 colorc、colorlsp、colorfmt、colortest、colorpkg 完整工具链与 VSCode 支持。"
     />
     <meta name="theme-color" content="#1450c8" />
     <link rel="icon" type="image/svg+xml" href="assets/img/colorful.svg" />
@@ -60,7 +60,7 @@
           <div>
             <div class="hero-logo">
               <img src="assets/img/colorful.svg" alt="Colorful 标志" width="62" height="62" />
-              <span class="pill"><span class="dot"></span> v0.1.0 · 21 个标准库模块</span>
+              <span class="pill"><span class="dot"></span> v0.1.0 · 21 个内置模块</span>
             </div>
             <h1>写起来像脚本，<span class="grad">跑起来是原生</span></h1>
             <p class="lead">
@@ -117,6 +117,50 @@
     widgets.show(<span class="tok-s">"Counter"</span>, <span class="tok-n">480</span>, <span class="tok-n">640</span>, build)
 </code></pre>
           </div>
+        </div>
+      </section>
+
+      <section class="section soft" id="about">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>为什么是 Colorful</h2>
+            <p>它想同时满足四件在别处常常要分开取舍的事。</p>
+          </div>
+          <div class="grid cols-2">
+            <article class="card">
+              <h3>脚本的写法，原生的产物</h3>
+              <p>
+                缩进即块、类型推断、f-string，写起来接近脚本语言；<code>colorc</code> 把它编译成
+                单个可执行文件，交付时拷一个文件就走。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>界面与语言一起设计</h3>
+              <p>
+                GUI 是语言自带模块：布局是纯函数，绘制与命中测试共用同一批原生原语，
+                点到的位置就是画出来的位置。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>工程链一次配齐</h3>
+              <p>
+                编译器、语言服务器、格式化、测试、包管理、文档生成从第一版就在，
+                不用自己拼装工具。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>标准库看得懂</h3>
+              <p>
+                标准库是明文 <code>.cf</code>，可以阅读、替换、扩展，而不是只能调用的黑盒。
+              </p>
+            </article>
+          </div>
+          <p>
+            <a class="btn btn-ghost" href="docs.html#about">完整简介：为什么创建、用什么实现、能做什么 →</a>
+          </p>
         </div>
       </section>
 
@@ -179,7 +223,7 @@
                     <path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM14 3v6h6" />
                   </svg>
                 </span>
-                21 个标准库模块
+                19 个标准库模块
               </h3>
               <p>
                 JSON、正则、HTTP、文件与路径、文本与集合、命令行、日志、时间、随机、环境变量、
