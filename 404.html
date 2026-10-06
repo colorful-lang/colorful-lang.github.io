@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>页面不存在 — Colorful 语言</title>
+    <meta name="description" content="没有找到这个页面。" />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content="#1450c8" />
+    <link rel="icon" type="image/svg+xml" href="assets/img/colorful.svg" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      try {
+        var stored = localStorage.getItem('colorful-theme');
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', stored || (dark ? 'dark' : 'light'));
+      } catch (error) {
+        /* keep the default */
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="index.html">
+          <img src="assets/img/colorful.svg" alt="Colorful 标志" width="32" height="32" />
+          <span>
+            Colorful
+            <small>.cf</small>
+          </span>
+        </a>
+        <nav class="nav">
+          <a href="index.html">首页</a>
+          <a href="docs.html">快速开始</a>
+          <a href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">GitHub</a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap">
+          <div>
+            <span class="pill"><span class="dot"></span> 404</span>
+            <h1 style="margin-top: 16px">这个页面<span class="grad">不存在</span></h1>
+            <p class="lead">
+              链接可能已经变化，或者地址打错了。文档与下载入口都在下面。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="index.html">
+                回到首页
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+              <a class="btn btn-ghost" href="docs.html">快速开始</a>
+              <a class="btn btn-ghost" href="docs.html#downloads">下载与链接</a>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© <span data-year>2026</span> Colorful Language Authors · MIT License</span>
+        <nav>
+          <a href="index.html">首页</a>
+          <a href="docs.html">快速开始</a>
+          <a href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">语言仓库</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="assets/js/app.js" defer></script>
+  </body>
+</html>

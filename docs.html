@@ -1,0 +1,973 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>快速开始 — Colorful 语言文档</title>
+    <meta
+      name="description"
+      content="Colorful 语言从零开始教程：准备环境、安装工具链与 VSCode 插件、写第一个程序、编译运行，以及语言速览、21 个标准库模块、GUI 编程、测试、包管理与工具链参数参考。"
+    />
+    <meta name="theme-color" content="#1450c8" />
+    <link rel="icon" type="image/svg+xml" href="assets/img/colorful.svg" />
+    <link rel="apple-touch-icon" href="assets/img/colorful.png" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      try {
+        var stored = localStorage.getItem('colorful-theme');
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', stored || (dark ? 'dark' : 'light'));
+      } catch (error) {
+        /* keep the default */
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="index.html">
+          <img src="assets/img/colorful.svg" alt="Colorful 标志" width="32" height="32" />
+          <span>
+            Colorful
+            <small>文档</small>
+          </span>
+        </a>
+        <nav class="nav" data-nav>
+          <a href="index.html">首页</a>
+          <a href="docs.html" class="active">快速开始</a>
+          <a href="docs.html#stdlib">标准库</a>
+          <a href="docs.html#tools">工具链</a>
+          <a href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">GitHub</a>
+        </nav>
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="切换主题">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
+          </svg>
+        </button>
+        <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-expanded="false" aria-label="打开菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <div class="wrap docs">
+      <aside class="docs-sidebar">
+        <nav>
+          <h4>入门</h4>
+          <a href="#start">从零开始</a>
+          <a href="#first-program">第一个程序</a>
+          <a href="#run">编译与运行</a>
+          <h4>语言</h4>
+          <a href="#language">语言速览</a>
+          <a href="#types">变量与类型</a>
+          <a href="#functions">函数</a>
+          <a href="#control">控制流</a>
+          <a href="#records">record 与 protocol</a>
+          <a href="#errors">异常处理</a>
+          <a href="#collections">集合</a>
+          <a href="#modules">模块与导入</a>
+          <h4>库与工具</h4>
+          <a href="#stdlib">标准库</a>
+          <a href="#widgets">GUI 编程</a>
+          <a href="#testing">测试</a>
+          <a href="#packages">包管理</a>
+          <a href="#tools">工具链参考</a>
+          <h4>其它</h4>
+          <a href="#downloads">下载与链接</a>
+          <a href="#troubleshooting">常见问题</a>
+        </nav>
+      </aside>
+
+      <main class="docs-content">
+        <h1>快速开始</h1>
+        <p>
+          这篇文档假设你的电脑上什么都没有。跟着做，十分钟内你会跑起第一个 Colorful 程序，
+          并且拥有实时诊断、补全与格式化的完整开发体验。
+        </p>
+
+        <div class="callout">
+          <strong>最短路径：</strong>只装 VSCode 插件就够了 —— 插件内已经打包了编译器、语言服务器、
+          格式化器、测试器、包管理器、runtime 与标准库。
+        </div>
+
+        <h2 id="start">从零开始</h2>
+
+        <h3><span class="step">1</span>准备环境</h3>
+        <p>
+          只有「从源码构建」才需要编译器与构建工具。如果你只打算用编辑器写代码，
+          可以直接跳到第 2 步的路线一。
+        </p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>需要什么</th>
+                <th>用途</th>
+                <th>下载</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>Visual Studio Code</td>
+                <td>编辑器，提供高亮、诊断、补全、跳转与格式化</td>
+                <td><a href="https://code.visualstudio.com/" target="_blank" rel="noreferrer">code.visualstudio.com</a></td>
+              </tr>
+              <tr>
+                <td>Visual Studio 生成工具</td>
+                <td>Windows 上从源码构建工具链（勾选「使用 C++ 的桌面开发」）</td>
+                <td><a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/" target="_blank" rel="noreferrer">visualstudio.microsoft.com</a></td>
+              </tr>
+              <tr>
+                <td>CMake 3.20+</td>
+                <td>macOS / Linux 构建（Windows 也可用）</td>
+                <td><a href="https://cmake.org/download/" target="_blank" rel="noreferrer">cmake.org</a></td>
+              </tr>
+              <tr>
+                <td>Git</td>
+                <td>克隆仓库</td>
+                <td><a href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">git-scm.com</a></td>
+              </tr>
+              <tr>
+                <td>LLVM 15+ <em>（可选）</em></td>
+                <td>想要进程内 LLVM 代码生成时才需要；默认走内置 C 后端</td>
+                <td><a href="https://releases.llvm.org/" target="_blank" rel="noreferrer">releases.llvm.org</a></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3><span class="step">2</span>安装工具链</h3>
+
+        <p><strong>路线一 · 只装编辑器插件（推荐，无需构建）</strong></p>
+        <ol>
+          <li>
+            从
+            <a href="https://github.com/colorful-lang/colorful-vscode/releases/latest" target="_blank" rel="noreferrer">插件发布页</a>
+            下载 <code>colorful-lang-0.1.0.vsix</code>；
+          </li>
+          <li>用下面的命令安装，或把 <code>.vsix</code> 拖进 VSCode 的扩展面板；</li>
+          <li>执行一次 <code>Developer: Reload Window</code>。</li>
+        </ol>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>code --install-extension colorful-lang-0.1.0.vsix --force
+</code></pre>
+        </div>
+        <p>
+          插件内置的工具位于扩展目录的 <code>server/&lt;平台&gt;-&lt;架构&gt;/</code>，
+          查找顺序是：<code>colorful.*.path</code> 设置 → 工作区的
+          <code>build/ bin/ lib/</code> 等目录 → 插件内置 → <code>PATH</code>。
+          所以你也可以之后换成自己构建的版本，不会冲突。
+        </p>
+
+        <p><strong>路线二 · Windows 从源码构建</strong></p>
+        <div class="code">
+          <div class="code-head"><span class="name">命令提示符</span></div>
+          <pre><code>git clone https://github.com/colorful-lang/colorful.git
+cd colorful
+scripts\build-windows.bat
+</code></pre>
+        </div>
+        <p>
+          脚本会编译编译器与全部工具，产物落在 <code>build\</code>：<code>colorc.exe</code>、
+          <code>colorlsp.exe</code>、<code>colorfmt.exe</code>、<code>colortest.exe</code>、
+          <code>colorpkg.exe</code>、<code>colorlib.exe</code>。
+        </p>
+
+        <p><strong>路线三 · CMake（macOS / Linux / Windows）</strong></p>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>git clone https://github.com/colorful-lang/colorful.git
+cd colorful
+cmake -S . -B build
+cmake --build build --config Release
+</code></pre>
+        </div>
+        <p>产物在 <code>build/bin/</code>。若要让插件使用它们，把路径写进设置即可：</p>
+        <div class="code">
+          <div class="code-head"><span class="name">.vscode/settings.json</span></div>
+          <pre><code>{
+  <span class="tok-s">"colorful.compiler.path"</span>: <span class="tok-s">"/abs/path/colorc"</span>,
+  <span class="tok-s">"colorful.languageServer.path"</span>: <span class="tok-s">"/abs/path/colorlsp"</span>,
+  <span class="tok-s">"colorful.formatter.path"</span>: <span class="tok-s">"/abs/path/colorfmt"</span>,
+  <span class="tok-s">"colorful.testRunner.path"</span>: <span class="tok-s">"/abs/path/colortest"</span>,
+  <span class="tok-s">"colorful.packageManager.path"</span>: <span class="tok-s">"/abs/path/colorpkg"</span>
+}
+</code></pre>
+        </div>
+
+        <h3><span class="step">3</span>确认编辑器已就绪</h3>
+        <p>新建一个 <code>.cf</code> 文件，状态栏应该出现 <strong>Colorful</strong>：</p>
+        <ul>
+          <li>打字时未定义名称、类型不匹配等错误会即时标红（编辑器下方 Problems 面板可看全部）；</li>
+          <li><code>Ctrl+Space</code> 触发补全，<code>F12</code> 跳转定义，<code>Shift+F12</code> 查找引用；</li>
+          <li><code>Shift+Alt+F</code> 用 <code>colorfmt</code> 格式化；</li>
+          <li><code>Ctrl+Alt+R / B / T</code> 分别运行、构建、测试当前文件。</li>
+        </ul>
+        <div class="callout warn">
+          若状态栏没有出现 Colorful，点击状态栏或用命令面板执行
+          <code>Colorful: Show Output Channel</code> 查看原因；把
+          <code>colorful.logging.level</code> 设为 <code>debug</code> 会打印工具查找过的每一个目录。
+        </div>
+
+        <h2 id="first-program">第一个程序</h2>
+        <p>新建 <code>hello.cf</code>：</p>
+        <div class="code">
+          <div class="code-head"><span class="name">hello.cf</span></div>
+          <pre><code><span class="tok-c">### 我的第一个 Colorful 程序</span>
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    print(<span class="tok-s">"Hello, Colorful!"</span>)
+    print(<span class="tok-s">"2 ** 10 ="</span>, math.ipow(<span class="tok-n">2</span>, <span class="tok-n">10</span>))
+    print(f<span class="tok-s">"16 的平方根是 {math.sqrt(16.0)}"</span>)
+
+
+<span class="tok-c"># 程序入口：顶层调用 main()</span>
+main()
+</code></pre>
+        </div>
+        <p>
+          三点值得注意：<code>math</code> 这类标准库模块**不需要 import**，用短前缀直接调用；
+          <code>f"..."</code> 是插值字符串，花括号里可以写任意表达式；程序从顶层第一条语句开始执行，
+          惯例是把逻辑放进 <code>main()</code> 再调用它。
+        </p>
+
+        <h2 id="run">编译与运行</h2>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code><span class="tok-c"># 编译成可执行文件</span>
+colorc hello.cf -o build/hello
+
+<span class="tok-c"># 直接运行</span>
+build/hello
+
+<span class="tok-c"># 或者一条命令编译并运行</span>
+colorc hello.cf --run
+
+<span class="tok-c"># 加优化、开启更多检查</span>
+colorc hello.cf -o build/hello --opt 3
+</code></pre>
+        </div>
+        <p>产物是普通的原生可执行文件，可以直接分发，不需要安装任何 Colorful 运行时。</p>
+        <div class="callout">
+          <strong>想看看中间产物？</strong> <code>--emit c</code> 输出生成的 C 代码，
+          <code>--emit llvm</code> 输出 LLVM IR，<code>--emit hir</code> /
+          <code>--emit mir</code> 输出编译器内部表示，用来理解某段代码是怎么被编译的。
+        </div>
+
+        <h2 id="language">语言速览</h2>
+        <p>下面是写真实程序需要知道的全部内容，每一段都可以直接落进同一个文件里跑通。</p>
+
+        <h3 id="types">变量与类型</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">types.cf</span></div>
+          <pre><code><span class="tok-k">def</span> <span class="tok-f">main</span>():
+    name = <span class="tok-s">"Colorful"</span>          <span class="tok-c"># str</span>
+    count = <span class="tok-n">3</span>                 <span class="tok-c"># int</span>
+    ratio = <span class="tok-n">0.75</span>              <span class="tok-c"># float</span>
+    ready = <span class="tok-n">True</span>              <span class="tok-c"># bool</span>
+    nothing = <span class="tok-k">nil</span>             <span class="tok-c"># 空值</span>
+    items = [<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>]        <span class="tok-c"># list[int]</span>
+    scores = { <span class="tok-s">"a"</span>: <span class="tok-n">90</span> }      <span class="tok-c"># dict[str, int]</span>
+
+    <span class="tok-c"># 需要时可以显式标注类型</span>
+    total: <span class="tok-t">int</span> = <span class="tok-n">0</span>
+    names: <span class="tok-t">list[str]</span> = [<span class="tok-s">"x"</span>, <span class="tok-s">"y"</span>]
+
+    print(name, count, ratio, ready, nothing)
+    print(items, scores, total, names)
+</code></pre>
+        </div>
+        <div class="callout warn">
+          <strong>除法要注意：</strong> <code>/</code> 总是产生 <code>float</code>，
+          整数商要用 <code>//</code>，取余用 <code>%</code>。例如 <code>7 / 2</code> 是
+          <code>3.5</code>，<code>7 // 2</code> 才是 <code>3</code>。
+        </div>
+
+        <h3 id="functions">函数</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">functions.cf</span></div>
+          <pre><code><span class="tok-k">def</span> <span class="tok-f">area</span>(w: <span class="tok-t">float</span>, h: <span class="tok-t">float</span>) -> <span class="tok-t">float</span>:
+    <span class="tok-k">return</span> w * h
+
+
+<span class="tok-c"># 不写参数类型就是泛型：编译器为每个调用点单独实例化</span>
+<span class="tok-k">def</span> <span class="tok-f">first_or</span>(xs, fallback):
+    <span class="tok-k">if</span> len(xs) == <span class="tok-n">0</span>:
+        <span class="tok-k">return</span> fallback
+    <span class="tok-k">return</span> xs[<span class="tok-n">0</span>]
+
+
+<span class="tok-k">def</span> <span class="tok-f">apply_all</span>(xs, fn):
+    out = []
+    <span class="tok-k">for</span> x <span class="tok-k">in</span> xs:
+        out.append(fn(x))
+    <span class="tok-k">return</span> out
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    print(area(<span class="tok-n">3.0</span>, <span class="tok-n">4.0</span>))
+    print(first_or([<span class="tok-n">7</span>, <span class="tok-n">8</span>], <span class="tok-n">0</span>))
+    print(apply_all([<span class="tok-n">1</span>, <span class="tok-n">2</span>, <span class="tok-n">3</span>], <span class="tok-k">def</span>(n): <span class="tok-k">return</span> n * n))
+
+
+main()
+</code></pre>
+        </div>
+
+        <h3 id="control">控制流</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">control.cf</span></div>
+          <pre><code><span class="tok-k">def</span> <span class="tok-f">classify</span>(n: <span class="tok-t">int</span>) -> <span class="tok-t">str</span>:
+    <span class="tok-k">if</span> n &lt; <span class="tok-n">0</span>:
+        <span class="tok-k">return</span> <span class="tok-s">"negative"</span>
+    <span class="tok-k">elif</span> n == <span class="tok-n">0</span>:
+        <span class="tok-k">return</span> <span class="tok-s">"zero"</span>
+    <span class="tok-k">else</span>:
+        <span class="tok-k">return</span> <span class="tok-s">"positive"</span>
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    <span class="tok-k">for</span> i <span class="tok-k">in</span> range(<span class="tok-n">1</span>, <span class="tok-n">4</span>):
+        print(i, classify(i))
+
+    n = <span class="tok-n">3</span>
+    <span class="tok-k">while</span> n &gt; <span class="tok-n">0</span>:
+        print(<span class="tok-s">"countdown"</span>, n)
+        n -= <span class="tok-n">1</span>
+
+    <span class="tok-k">for</span> word <span class="tok-k">in</span> [<span class="tok-s">"a"</span>, <span class="tok-s">"bb"</span>]:
+        <span class="tok-k">if</span> len(word) == <span class="tok-n">1</span>:
+            <span class="tok-k">continue</span>
+        print(<span class="tok-s">"longer:"</span>, word)
+
+    <span class="tok-k">if</span> n == <span class="tok-n">0</span> <span class="tok-k">and</span> <span class="tok-k">not</span> <span class="tok-n">False</span>:
+        print(<span class="tok-s">"done"</span>)
+
+
+main()
+</code></pre>
+        </div>
+
+        <h3 id="records">record 与 protocol</h3>
+        <p>
+          <code>record</code> 是值类型，按字段顺序构造；可以在 record 上定义方法。
+          <code>protocol</code> 是接口，靠方法集合隐式匹配，不需要显式声明实现。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">shapes.cf</span></div>
+          <pre><code><span class="tok-k">record</span> Point:
+    x: <span class="tok-t">float</span>
+    y: <span class="tok-t">float</span>
+
+
+<span class="tok-k">def</span> <span class="tok-f">Point.length</span>(self) -> <span class="tok-t">float</span>:
+    <span class="tok-k">return</span> math.sqrt(self.x * self.x + self.y * self.y)
+
+
+<span class="tok-k">protocol</span> Shape:
+    <span class="tok-k">def</span> area(self) -> <span class="tok-t">float</span>
+
+
+<span class="tok-k">record</span> Circle:
+    r: <span class="tok-t">float</span>
+
+
+<span class="tok-k">def</span> <span class="tok-f">Circle.area</span>(self) -> <span class="tok-t">float</span>:
+    <span class="tok-k">return</span> <span class="tok-n">3.141592653589793</span> * self.r * self.r
+
+
+<span class="tok-k">def</span> <span class="tok-f">describe</span>(s: Shape) -> <span class="tok-t">str</span>:
+    <span class="tok-k">return</span> <span class="tok-s">"area = "</span> + str(s.area())
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    p = Point(<span class="tok-n">3.0</span>, <span class="tok-n">4.0</span>)
+    print(<span class="tok-s">"length"</span>, p.length())
+    print(describe(Circle(<span class="tok-n">1.0</span>)))
+
+
+main()
+</code></pre>
+        </div>
+
+        <h3 id="errors">异常处理</h3>
+        <p>
+          文件、网络等原语失败时会抛出异常。<code>raise</code> 抛出，
+          <code>try / except / finally</code> 捕获，<code>except</code> 可以命名内置错误种类。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">errors.cf</span></div>
+          <pre><code><span class="tok-k">def</span> <span class="tok-f">read_or</span>(path: <span class="tok-t">str</span>, fallback: <span class="tok-t">str</span>) -> <span class="tok-t">str</span>:
+    <span class="tok-k">try</span>:
+        <span class="tok-k">return</span> io.read(path)
+    <span class="tok-k">except</span> IoError <span class="tok-k">as</span> e:
+        print(<span class="tok-s">"could not read:"</span>, e)
+        <span class="tok-k">return</span> fallback
+    <span class="tok-k">finally</span>:
+        print(<span class="tok-s">"read_or finished"</span>)
+
+
+<span class="tok-k">def</span> <span class="tok-f">must_be_positive</span>(n: <span class="tok-t">int</span>) -> <span class="tok-t">int</span>:
+    <span class="tok-k">if</span> n &lt;= <span class="tok-n">0</span>:
+        <span class="tok-k">raise</span> ValueError(<span class="tok-s">"expected a positive number"</span>)
+    <span class="tok-k">return</span> n
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    print(read_or(<span class="tok-s">"missing.txt"</span>, <span class="tok-s">"(default)"</span>))
+    <span class="tok-k">try</span>:
+        must_be_positive(<span class="tok-n">0</span>)
+    <span class="tok-k">except</span> ValueError <span class="tok-k">as</span> e:
+        print(<span class="tok-s">"caught:"</span>, e)
+
+
+main()
+</code></pre>
+        </div>
+
+        <h3 id="collections">集合</h3>
+        <p>
+          列表与字典都有方法：列表有 <code>append / pop / insert / remove / index /
+          contains / sort / reverse / len</code>，字典有
+          <code>get / set / has / keys / values / items / remove / clear</code>。
+          索引 <code>xs[i]</code> 与 <code>d[k]</code> 读写都可，读缺失键会抛出可捕获的错误。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">collections.cf</span></div>
+          <pre><code><span class="tok-k">def</span> <span class="tok-f">main</span>():
+    xs = [<span class="tok-n">3</span>, <span class="tok-n">1</span>, <span class="tok-n">3</span>, <span class="tok-n">2</span>]
+    xs.append(<span class="tok-n">5</span>)
+    xs.sort()
+    print(<span class="tok-s">"sorted"</span>, xs, <span class="tok-s">"len"</span>, len(xs))
+
+    tally = dict()
+    <span class="tok-k">for</span> x <span class="tok-k">in</span> xs:
+        <span class="tok-k">if</span> tally.has(str(x)):
+            tally[str(x)] = tally[str(x)] + <span class="tok-n">1</span>
+        <span class="tok-k">else</span>:
+            tally[str(x)] = <span class="tok-n">1</span>
+    print(<span class="tok-s">"tally"</span>, tally)
+
+    <span class="tok-c"># collections 模块提供常用高阶操作</span>
+    print(collections.unique(xs))
+    print(collections.min_max(xs))
+    print(collections.group_count([<span class="tok-s">"a"</span>, <span class="tok-s">"b"</span>, <span class="tok-s">"a"</span>]))
+    print(sorted(map(<span class="tok-k">def</span>(n): <span class="tok-k">return</span> n * <span class="tok-n">2</span>, xs)))
+
+
+main()
+</code></pre>
+        </div>
+
+        <h3 id="modules">模块与导入</h3>
+        <p>
+          一个 <code>.cf</code> 文件就是一个模块，用 <code>module 名字</code> 声明模块名、
+          用 <code>import 名字</code> 引入其它模块。标准库模块始终可用，写短前缀即可（<code>math.sqrt</code>）。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">greet.cf</span></div>
+          <pre><code><span class="tok-c">### 一个可被其它文件导入的小模块</span>
+<span class="tok-k">module</span> greet
+
+
+<span class="tok-k">def</span> <span class="tok-f">hello</span>(who: <span class="tok-t">str</span>) -> <span class="tok-t">str</span>:
+    <span class="tok-k">return</span> <span class="tok-s">"Hello, "</span> + who + <span class="tok-s">"!"</span>
+</code></pre>
+        </div>
+        <div class="code">
+          <div class="code-head"><span class="name">app.cf</span></div>
+          <pre><code><span class="tok-k">import</span> greet
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    print(greet.hello(<span class="tok-s">"Colorful"</span>))
+
+
+main()
+</code></pre>
+        </div>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>colorc app.cf -o build/app -I .
+build/app
+</code></pre>
+        </div>
+        <p>
+          用 <code>-I 目录</code> 追加模块搜索路径（可重复），<code>--stdlib 目录</code>
+          指定标准库位置。工具会依次查找当前文件目录、<code>-I</code> 目录与标准库目录。
+        </p>
+
+        <h2 id="stdlib">标准库</h2>
+        <p>
+          21 个模块，全部无需 import，用短前缀调用（<code>strings.pad_left(...)</code>）。
+          详细签名可用 <code>colordoc</code> 生成文档，或直接在编辑器里悬停查看。
+        </p>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>模块</th>
+                <th>提供什么</th>
+                <th>示例</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>core</code></td>
+                <td>命令行参数、切片、字符、重复、clamp、泛型小工具</td>
+                <td><code>core.args()</code></td>
+              </tr>
+              <tr>
+                <td><code>math</code></td>
+                <td>平方根、三角、对数、幂、取整、常量、素数、最大公约数</td>
+                <td><code>math.sqrt(2.0)</code></td>
+              </tr>
+              <tr>
+                <td><code>io</code> / <code>fs</code></td>
+                <td>读写文件、逐行读取、写行、存在性、目录列举、复制、递归计数</td>
+                <td><code>io.read("a.txt")</code></td>
+              </tr>
+              <tr>
+                <td><code>strings</code></td>
+                <td>补白与居中、截断、大小写、前后缀裁剪、计数、分行、缩进、定点小数、千分位</td>
+                <td><code>strings.thousands(1234567)</code></td>
+              </tr>
+              <tr>
+                <td><code>collections</code></td>
+                <td>首个/末个、去重、反转、断言式查询、均值、极值、词频、合并、zip、flatten</td>
+                <td><code>collections.unique(xs)</code></td>
+              </tr>
+              <tr>
+                <td><code>path</code></td>
+                <td>拼接、规范化、取目录/文件名/扩展名/主干名、绝对化、工作目录</td>
+                <td><code>path.join("a", "b.cf")</code></td>
+              </tr>
+              <tr>
+                <td><code>json</code></td>
+                <td>解析、序列化、缩进输出、按类型读取与取值</td>
+                <td><code>json.parse(text)</code></td>
+              </tr>
+              <tr>
+                <td><code>regex</code></td>
+                <td>编译、匹配、查找、替换、全量查找</td>
+                <td><code>regex.find_all(t, p)</code></td>
+              </tr>
+              <tr>
+                <td><code>time</code></td>
+                <td>当前时间、毫秒、睡眠、格式化、日期与时钟</td>
+                <td><code>time.format(t, fmt)</code></td>
+              </tr>
+              <tr>
+                <td><code>random</code></td>
+                <td>种子、整数、浮点、选择、洗牌、布尔</td>
+                <td><code>random.int(1, 6)</code></td>
+              </tr>
+              <tr>
+                <td><code>cli</code></td>
+                <td>解析 <code>--k=v</code>、<code>--flag</code>、位置参数，并提供取值辅助</td>
+                <td><code>cli.parse(core.args())</code></td>
+              </tr>
+              <tr>
+                <td><code>log</code></td>
+                <td>带时间戳与级别的日志器，可输出到标准输出或追加到文件</td>
+                <td><code>log.logger("app").info("ready")</code></td>
+              </tr>
+              <tr>
+                <td><code>env</code></td>
+                <td>环境变量读取/判断/写入、必填读取、工作目录</td>
+                <td><code>env.get_or("PORT", "8080")</code></td>
+              </tr>
+              <tr>
+                <td><code>encoding</code></td>
+                <td>hex、base64、URL percent 编解码</td>
+                <td><code>encoding.base64("Hi")</code></td>
+              </tr>
+              <tr>
+                <td><code>net</code> / <code>http</code></td>
+                <td>TCP 连接与收发；HTTP 服务端路由与客户端请求</td>
+                <td><code>net.connect(h, 80)</code></td>
+              </tr>
+              <tr>
+                <td><code>url</code></td>
+                <td>切分 scheme/host/port/path/query，读取查询参数</td>
+                <td><code>url.parse(u).host</code></td>
+              </tr>
+              <tr>
+                <td><code>test</code></td>
+                <td>断言、分组、统计、结束检查</td>
+                <td><code>test.assert(cond, "what")</code></td>
+              </tr>
+              <tr>
+                <td><code>gui</code> / <code>widgets</code></td>
+                <td>Material 3 绘制原语与声明式组件层</td>
+                <td><code>widgets.filled_button(...)</code></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h2 id="widgets">GUI 编程</h2>
+        <p>
+          <code>gui</code> 是立即模式的绘制层（矩形、文本、图标、按钮、回调），
+          <code>widgets</code> 在上面提供声明式组件：把窗口描述成一棵树，返回给渲染器。
+          组件构造器返回的对象带有链式修饰方法（<code>gap</code>、<code>pad_to</code>、
+          <code>sized_to</code>、<code>grown</code>、<code>expand_in</code>、<code>bg</code>、
+          <code>tint</code>、<code>font</code>、<code>on_tap</code>、<code>scrolls</code>）。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">counter.cf</span></div>
+          <pre><code><span class="tok-k">import</span> gui
+<span class="tok-k">import</span> widgets
+
+
+<span class="tok-k">def</span> <span class="tok-f">on_tap</span>(id: <span class="tok-t">str</span>) -> <span class="tok-t">bool</span>:
+    gui.state_inc(<span class="tok-s">"count"</span>, <span class="tok-n">1</span>)
+    <span class="tok-k">return</span> <span class="tok-n">True</span>
+
+
+<span class="tok-k">def</span> <span class="tok-f">on_reset</span>(id: <span class="tok-t">str</span>) -> <span class="tok-t">bool</span>:
+    gui.state_set(<span class="tok-s">"count"</span>, <span class="tok-n">0</span>)
+    <span class="tok-k">return</span> <span class="tok-n">True</span>
+
+
+<span class="tok-c">### 每帧调用一次：返回组件树，渲染器负责布局与绘制</span>
+<span class="tok-k">def</span> <span class="tok-f">build</span>(n: <span class="tok-t">int</span>) -> widgets.Widget:
+    page = widgets.scaffold(
+        widgets.app_bar(<span class="tok-s">"Counter"</span>),
+        widgets.column([
+            widgets.elevated_card(
+                widgets.column([
+                    widgets.title(<span class="tok-s">"Tapped "</span> + str(gui.state_get(<span class="tok-s">"count"</span>)) + <span class="tok-s">" times"</span>),
+                    widgets.label(<span class="tok-s">"Material 3, rendered natively"</span>).gap(<span class="tok-n">4.0</span>),
+                ]).gap(<span class="tok-n">8.0</span>).pad_to(<span class="tok-n">16.0</span>),
+            ),
+            widgets.row([
+                widgets.filled_button(<span class="tok-s">"tap"</span>, <span class="tok-s">"Tap me"</span>, on_tap),
+                widgets.tonal_button(<span class="tok-s">"reset"</span>, <span class="tok-s">"Reset"</span>, on_reset),
+            ]).gap(<span class="tok-n">12.0</span>),
+        ]).gap(<span class="tok-n">16.0</span>).pad_to(<span class="tok-n">24.0</span>),
+    )
+    <span class="tok-k">return</span> widgets.with_fab(page, widgets.fab(<span class="tok-s">"add"</span>, <span class="tok-s">"add"</span>, on_tap))
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    widgets.light()
+    widgets.show(<span class="tok-s">"Counter"</span>, <span class="tok-n">480</span>, <span class="tok-n">640</span>, build)
+
+
+main()
+</code></pre>
+        </div>
+        <p>
+          应用状态放在 <code>gui.state_*</code>（模块本身没有全局变量），回调是普通函数、
+          只接收组件 id。窗口大小改变时布局会自动重算，因此不需要手写重排逻辑。
+        </p>
+
+        <h2 id="testing">测试</h2>
+        <p>
+          以 <code>test_</code> 开头的无参函数会被 <code>colortest</code> 自动发现并编译成一个驱动运行。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">math_test.cf</span></div>
+          <pre><code><span class="tok-k">def</span> <span class="tok-f">add</span>(a: <span class="tok-t">int</span>, b: <span class="tok-t">int</span>) -> <span class="tok-t">int</span>:
+    <span class="tok-k">return</span> a + b
+
+
+<span class="tok-k">def</span> <span class="tok-f">test_add_works</span>():
+    test.assert(add(<span class="tok-n">2</span>, <span class="tok-n">3</span>) == <span class="tok-n">5</span>, <span class="tok-s">"integers add up"</span>)
+
+
+<span class="tok-k">def</span> <span class="tok-f">test_strings_helper</span>():
+    test.assert_equal_str(strings.pad_left(<span class="tok-s">"7"</span>, <span class="tok-n">3</span>, <span class="tok-s">"0"</span>), <span class="tok-s">"007"</span>, <span class="tok-s">"padding pads"</span>)
+</code></pre>
+        </div>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code><span class="tok-c"># 运行当前文件里的全部测试</span>
+colortest math_test.cf
+
+<span class="tok-c"># 运行整个目录，只跑名字里带 add 的用例</span>
+colortest -k add tests/
+
+<span class="tok-c"># 只列出会发现哪些用例（不编译）</span>
+colortest --list tests/
+</code></pre>
+        </div>
+        <p>
+          在 VSCode 里，Testing 侧边栏会自动列出工作区中所有 <code>test_*</code> 用例，
+          点击即可运行并看到逐条结果。
+        </p>
+
+        <h2 id="packages">包管理</h2>
+        <p>
+          多文件项目用 <code>colorful.toml</code> 描述：包名、入口文件、构建参数与依赖。
+          <code>colorpkg</code> 提供脚手架与常用命令。
+        </p>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>colorpkg init myapp        <span class="tok-c"># 生成 colorful.toml 与 src/main.cf</span>
+cd myapp
+colorpkg build             <span class="tok-c"># 构建</span>
+colorpkg run               <span class="tok-c"># 构建并运行</span>
+colorpkg test              <span class="tok-c"># 运行测试</span>
+colorpkg add mathx@1.0     <span class="tok-c"># 记录依赖到 colorful.toml</span>
+colorpkg lock              <span class="tok-c"># 写出 colorful.lock</span>
+colorpkg list              <span class="tok-c"># 列出依赖</span>
+</code></pre>
+        </div>
+        <div class="code">
+          <div class="code-head"><span class="name">colorful.toml</span></div>
+          <pre><code>[package]
+name = <span class="tok-s">"myapp"</span>
+version = <span class="tok-s">"0.1.0"</span>
+entry = <span class="tok-s">"src/main.cf"</span>
+
+[build]
+opt = 2
+</code></pre>
+        </div>
+        <p>
+          依赖放在 <code>vendor/&lt;名字&gt;/</code>，构建时会自动加入模块搜索路径，
+          因此 <code>import 名字.子模块</code> 直接可用。
+        </p>
+
+        <h2 id="tools">工具链参考</h2>
+
+        <h3>colorc — 编译器</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>参数</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>-o, --output &lt;path&gt;</code></td><td>输出文件（默认 <code>a.exe</code>）</td></tr>
+              <tr><td><code>--emit &lt;kind&gt;</code></td><td><code>exe</code> / <code>object</code> / <code>llvm</code> / <code>c</code> / <code>wasm</code> / <code>tokens</code> / <code>ast</code> / <code>hir</code> / <code>mir</code></td></tr>
+              <tr><td><code>--backend &lt;kind&gt;</code></td><td><code>auto</code> / <code>llvm</code> / <code>c</code></td></tr>
+              <tr><td><code>--opt &lt;0-3&gt;</code></td><td>优化级别（默认 2）</td></tr>
+              <tr><td><code>--run</code></td><td>构建成功后立即运行</td></tr>
+              <tr><td><code>-I, --search &lt;dir&gt;</code></td><td>追加模块搜索路径（可重复）</td></tr>
+              <tr><td><code>--stdlib &lt;dir&gt;</code></td><td>标准库目录</td></tr>
+              <tr><td><code>-L, --lib-dir &lt;dir&gt;</code></td><td>runtime 库目录（<code>libcolorful.cll</code> 等）</td></tr>
+              <tr><td><code>--static-runtime</code> / <code>--shared-runtime</code></td><td>静态或动态链接 runtime</td></tr>
+              <tr><td><code>--time</code> / <code>-v</code></td><td>打印各阶段耗时 / 详细日志</td></tr>
+            </tbody>
+          </table>
+        </div>
+
+        <h3>colorlsp — 语言服务器</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>colorlsp --stdio                    <span class="tok-c"># 编辑器以 stdio 方式连接</span>
+colorlsp --stdio --stdlib D:\stdlib
+</code></pre>
+        </div>
+        <p>支持 LSP 3.17：诊断、补全、悬停、定义、引用、重命名、文档符号、签名帮助与格式化。</p>
+
+        <h3>colorfmt — 格式化</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>colorfmt src\main.cf            <span class="tok-c"># 就地格式化</span>
+colorfmt --check src            <span class="tok-c"># 只检查，未格式化时退出码为 1</span>
+colorfmt - --stdout &lt; main.cf   <span class="tok-c"># 标准输入输出（编辑器用的就是这条）</span>
+colorfmt --indent 4 src
+</code></pre>
+        </div>
+
+        <h3>colortest — 测试</h3>
+        <div class="table-scroll">
+          <table>
+            <thead>
+              <tr>
+                <th>参数</th>
+                <th>说明</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td><code>--list</code></td><td>列出会发现的用例</td></tr>
+              <tr><td><code>--json</code></td><td>输出机器可读结果</td></tr>
+              <tr><td><code>-k, --filter &lt;N&gt;</code></td><td>只运行名字包含 N 的用例</td></tr>
+              <tr><td><code>--driver</code></td><td>只打印生成的驱动，不运行</td></tr>
+              <tr><td><code>--keep</code></td><td>保留生成的驱动与可执行文件</td></tr>
+              <tr><td><code>-I &lt;dir&gt;</code> / <code>--stdlib &lt;dir&gt;</code></td><td>模块与标准库搜索路径</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>每个测试文件会单独生成一个驱动，所以不同文件里的同名类型互不干扰。</p>
+
+        <h3>colorpkg — 包管理</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>colorpkg init | build | run | test | add | remove | list | lock | clean
+</code></pre>
+        </div>
+
+        <h3>colorlib — runtime 打包</h3>
+        <div class="code">
+          <div class="code-head"><span class="name">终端</span></div>
+          <pre><code>colorlib build --out lib          <span class="tok-c"># 静态库 + 动态库 + 头文件 + 字体 + 加密模块归档</span>
+colorlib info lib                 <span class="tok-c"># 查看清单</span>
+colorlib modules lib\libcolorful.cll   <span class="tok-c"># 列出归档里的模块</span>
+colorlib install lib C:\colorful\lib   <span class="tok-c"># 复制到目标目录</span>
+</code></pre>
+        </div>
+
+        <h2 id="downloads">下载与链接</h2>
+        <p>需要的东西都在这里。</p>
+        <div class="dl-grid">
+          <a class="dl" href="https://github.com/colorful-lang/colorful-vscode/releases/latest" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+            </svg>
+            <span>
+              <b>VSCode 插件（.vsix）</b>
+              <span>内置编译器、语言服务器、runtime 与标准库</span>
+            </span>
+          </a>
+          <a class="dl" href="https://github.com/colorful-lang/colorful/releases" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+            </svg>
+            <span>
+              <b>工具链与 runtime</b>
+              <span>独立分发的编译器等命令行工具</span>
+            </span>
+          </a>
+          <a class="dl" href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM14 3v6h6" />
+            </svg>
+            <span>
+              <b>语言源码仓库</b>
+              <span>编译器、运行时、标准库与示例</span>
+            </span>
+          </a>
+          <a class="dl" href="https://code.visualstudio.com/" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+            </svg>
+            <span>
+              <b>Visual Studio Code</b>
+              <span>编辑器本体</span>
+            </span>
+          </a>
+          <a class="dl" href="https://visualstudio.microsoft.com/visual-cpp-build-tools/" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.7 6.3a4 4 0 0 1 5 5L9 22H2v-7L14.7 6.3z" />
+            </svg>
+            <span>
+              <b>Visual Studio 生成工具</b>
+              <span>Windows 从源码构建所需</span>
+            </span>
+          </a>
+          <a class="dl" href="https://cmake.org/download/" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14.7 6.3a4 4 0 0 1 5 5L9 22H2v-7L14.7 6.3z" />
+            </svg>
+            <span>
+              <b>CMake</b>
+              <span>跨平台构建（3.20 以上）</span>
+            </span>
+          </a>
+          <a class="dl" href="https://git-scm.com/downloads" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M6 3v12a3 3 0 0 0 3 3h6a3 3 0 0 0 3-3V9M6 9h12" />
+              <circle cx="6" cy="18" r="3" />
+            </svg>
+            <span>
+              <b>Git</b>
+              <span>克隆仓库</span>
+            </span>
+          </a>
+          <a class="dl" href="https://releases.llvm.org/" target="_blank" rel="noreferrer">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+            </svg>
+            <span>
+              <b>LLVM（可选）</b>
+              <span>想用进程内 LLVM 代码生成时安装</span>
+            </span>
+          </a>
+        </div>
+
+        <h2 id="troubleshooting">常见问题</h2>
+
+        <h3>状态栏没有出现 Colorful</h3>
+        <p>
+          说明语言服务器没有启动。执行 <code>Colorful: Show Output Channel</code> 查看
+          <code>Colorful Language Server</code> 通道；把 <code>colorful.logging.level</code>
+          设为 <code>debug</code> 后，<code>Colorful</code> 通道会打印工具查找过的每个目录，
+          直接告诉你它去过哪里。最常见的原因是工具不在查找路径里，用
+          <code>colorful.languageServer.path</code> 指过去即可。
+        </p>
+
+        <h3>打字时没有出现新的诊断</h3>
+        <p>
+          诊断是随编辑实时推送的（通常几十毫秒）。如果完全没有任何诊断，先确认服务器已连上
+          （状态栏显示 Colorful）。若只想在保存时看到结果，可以先用
+          <code>Colorful: Restart Language Server</code> 重启一次。
+        </p>
+
+        <h3>找不到 colorc / colorfmt / colortest</h3>
+        <p>
+          插件内置版本会在「插件目录 → server → 平台」下被自动发现。如果你换用了自己构建的版本，
+          把 <code>colorful.compiler.path</code> 等设置指向它们；工作区里
+          <code>build/</code> 下的产物也会被自动优先使用。
+        </p>
+
+        <h3>保存时没有自动格式化</h3>
+        <p>扩展默认不改动你的编辑设置。在工作区设置里加上：</p>
+        <div class="code">
+          <div class="code-head"><span class="name">.vscode/settings.json</span></div>
+          <pre><code>{
+  <span class="tok-s">"[colorful]"</span>: {
+    <span class="tok-s">"editor.formatOnSave"</span>: <span class="tok-n">true</span>
+  }
+}
+</code></pre>
+        </div>
+
+        <h3>整数除法结果不对</h3>
+        <p>
+          这是设计如此：<code>/</code> 总是返回 <code>float</code>。
+          需要整数商请用 <code>//</code>。
+        </p>
+
+        <h3>构建时报错找不到标准库</h3>
+        <p>
+          显式传目录即可：<code>colorc app.cf --stdlib &lt;标准库目录&gt;</code>。
+          插件里的运行、构建、测试命令会自动带上内置标准库路径，无需手动指定。
+        </p>
+
+        <div class="callout ok">
+          <strong>还有问题？</strong>
+          在
+          <a href="https://github.com/colorful-lang/colorful-vscode/issues" target="_blank" rel="noreferrer">插件仓库</a>
+          或
+          <a href="https://github.com/colorful-lang/colorful/issues" target="_blank" rel="noreferrer">语言仓库</a>
+          提 issue，附上 <code>colorlsp --version</code> 的输出与输出通道里相关的那几行。
+        </div>
+      </main>
+    </div>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© <span data-year>2026</span> Colorful Language Authors · MIT License</span>
+        <nav>
+          <a href="index.html">首页</a>
+          <a href="docs.html">快速开始</a>
+          <a href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">语言仓库</a>
+          <a href="https://github.com/colorful-lang/colorful-vscode" target="_blank" rel="noreferrer">插件仓库</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="assets/js/app.js" defer></script>
+  </body>
+</html>

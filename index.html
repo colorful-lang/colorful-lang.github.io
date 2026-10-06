@@ -1,0 +1,402 @@
+<!doctype html>
+<html lang="zh-CN" data-theme="light">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Colorful 语言 — 静态类型、AOT 编译到原生、自带 Material 3 GUI</title>
+    <meta
+      name="description"
+      content="Colorful 是一门静态类型的编译型语言：源码编译为原生机器码，标准库内置 21 个模块，gui 与 widgets 用声明式写法直接渲染 Material 3 界面。附带 colorc、colorlsp、colorfmt、colortest、colorpkg 完整工具链与 VSCode 支持。"
+    />
+    <meta name="theme-color" content="#1450c8" />
+    <link rel="icon" type="image/svg+xml" href="assets/img/colorful.svg" />
+    <link rel="apple-touch-icon" href="assets/img/colorful.png" />
+    <link rel="stylesheet" href="assets/css/style.css" />
+    <script>
+      // Set the theme before first paint so the page never flashes.
+      try {
+        var stored = localStorage.getItem('colorful-theme');
+        var dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.setAttribute('data-theme', stored || (dark ? 'dark' : 'light'));
+      } catch (error) {
+        /* keep the default */
+      }
+    </script>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap">
+        <a class="brand" href="index.html">
+          <img src="assets/img/colorful.svg" alt="Colorful 标志" width="32" height="32" />
+          <span>
+            Colorful
+            <small>.cf</small>
+          </span>
+        </a>
+        <nav class="nav" data-nav>
+          <a href="index.html" class="active">首页</a>
+          <a href="docs.html">快速开始</a>
+          <a href="docs.html#stdlib">标准库</a>
+          <a href="docs.html#tools">工具链</a>
+          <a href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">GitHub</a>
+        </nav>
+        <button class="icon-btn" type="button" data-theme-toggle aria-label="切换主题">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <circle cx="12" cy="12" r="4" />
+            <path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5L19 19M19 5l-1.5 1.5M6.5 17.5L5 19" />
+          </svg>
+        </button>
+        <button class="icon-btn menu-btn" type="button" data-menu-toggle aria-expanded="false" aria-label="打开菜单">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true">
+            <path d="M4 7h16M4 12h16M4 17h16" />
+          </svg>
+        </button>
+      </div>
+    </header>
+
+    <main>
+      <section class="hero">
+        <div class="wrap">
+          <div>
+            <div class="hero-logo">
+              <img src="assets/img/colorful.svg" alt="Colorful 标志" width="62" height="62" />
+              <span class="pill"><span class="dot"></span> v0.1.0 · 21 个标准库模块</span>
+            </div>
+            <h1>写起来像脚本，<span class="grad">跑起来是原生</span></h1>
+            <p class="lead">
+              Colorful 是一门静态类型的编译型语言。源码由 <code>colorc</code> 直接编译成机器码，
+              没有解释器、没有字节码；标准库自带 JSON、正则、HTTP、路径、编码、日志与环境变量，
+              <code>gui</code> 与 <code>widgets</code> 模块用声明式写法渲染 Material 3 界面。
+              配套 <code>colorlsp</code> 语言服务器与 VSCode 扩展，安装后开箱即用。
+            </p>
+            <div class="hero-actions">
+              <a class="btn btn-primary" href="docs.html">
+                快速开始
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M5 12h14M13 6l6 6-6 6" />
+                </svg>
+              </a>
+              <a class="btn btn-ghost" href="https://github.com/colorful-lang/colorful-vscode/releases/latest" target="_blank" rel="noreferrer">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                  <path d="M12 3v12M7 10l5 5 5-5M5 21h14" />
+                </svg>
+                下载插件
+              </a>
+            </div>
+            <div class="hero-meta">
+              <span>VSCode 扩展<strong>自带工具链与 runtime</strong></span>
+              <span>Windows · macOS · Linux</span>
+              <span>MIT 许可</span>
+            </div>
+          </div>
+
+          <div class="code">
+            <div class="code-head"><span class="name">counter.cf</span></div>
+            <pre><code><span class="tok-c">### 一个 Material 3 窗口：声明式描述，原生渲染</span>
+<span class="tok-k">import</span> gui
+<span class="tok-k">import</span> widgets
+
+
+<span class="tok-k">def</span> <span class="tok-f">on_tap</span>(id: <span class="tok-t">str</span>) -> <span class="tok-t">bool</span>:
+    gui.state_inc(<span class="tok-s">"count"</span>, <span class="tok-n">1</span>)
+    <span class="tok-k">return</span> <span class="tok-n">True</span>
+
+
+<span class="tok-k">def</span> <span class="tok-f">build</span>(n: <span class="tok-t">int</span>) -> widgets.Widget:
+    <span class="tok-k">return</span> widgets.scaffold(
+        widgets.app_bar(<span class="tok-s">"Counter"</span>),
+        widgets.column([
+            widgets.title(<span class="tok-s">"Tapped "</span> + str(gui.state_get(<span class="tok-s">"count"</span>)) + <span class="tok-s">" times"</span>),
+            widgets.filled_button(<span class="tok-s">"tap"</span>, <span class="tok-s">"Tap me"</span>, on_tap),
+        ]).gap(<span class="tok-n">16.0</span>).pad_to(<span class="tok-n">24.0</span>),
+    )
+
+
+<span class="tok-k">def</span> <span class="tok-f">main</span>():
+    widgets.light()
+    widgets.show(<span class="tok-s">"Counter"</span>, <span class="tok-n">480</span>, <span class="tok-n">640</span>, build)
+</code></pre>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="features">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>语言本身</h2>
+            <p>编译器把你写的每一行都检查一遍，再把检查过的程序编译成原生可执行文件。</p>
+          </div>
+          <div class="grid cols-3">
+            <article class="card">
+              <h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 11l3 3L22 4M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11" />
+                  </svg>
+                </span>
+                静态类型，编译期报错
+              </h3>
+              <p>
+                每个函数、每条分支都经过解析与完整类型检查，错误带上稳定的编号（形如
+                <code>CF2046</code>），可以直接搜索定位。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M13 2L3 14h7l-1 8 10-12h-7l1-8z" />
+                  </svg>
+                </span>
+                编译成原生，无需运行时
+              </h3>
+              <p>
+                <code>colorc</code> 走 LLVM 或内置的 C 后端，产物是普通可执行文件：没有解释器、
+                没有虚拟机、没有启动开销。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 3l8 4v6c0 5-3.4 7.6-8 8-4.6-.4-8-3-8-8V7l8-4z" />
+                  </svg>
+                </span>
+                结构化异常
+              </h3>
+              <p>
+                <code>raise</code> / <code>try</code> / <code>except</code> /
+                <code>finally</code> 是一等语法，底层文件与网络的原语失败会抛出可捕获的异常。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M4 19V5a2 2 0 0 1 2-2h9l5 5v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2zM14 3v6h6" />
+                  </svg>
+                </span>
+                21 个标准库模块
+              </h3>
+              <p>
+                JSON、正则、HTTP、文件与路径、文本与集合、命令行、日志、时间、随机、环境变量、
+                hex/base64/percent 编码、单元测试，全部开箱可用。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="4" width="18" height="14" rx="2" />
+                    <path d="M8 21h8M12 18v3" />
+                  </svg>
+                </span>
+                Material 3 原生 GUI
+              </h3>
+              <p>
+                <code>gui</code> 直接调用 Direct2D 与 DirectWrite，
+                <code>widgets</code> 提供 Flutter 风格的声明式组件与链式修饰方法。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>
+                <span class="card-icon" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14.7 6.3a4 4 0 0 1 5 5L9 22H2v-7L14.7 6.3z" />
+                  </svg>
+                </span>
+                工具链齐全
+              </h3>
+              <p>
+                编译器、语言服务器、格式化、测试、包管理、runtime 打包各司其职，
+                并且都提供命令行与可编程接口。
+              </p>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="section soft" id="install">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>快捷安装</h2>
+            <p>三条路线，按你的目的挑一条：只想写代码、想在 Windows 上构建、或者想跨平台构建。</p>
+          </div>
+
+          <div class="grid cols-2">
+            <article class="card">
+              <h3>路线一 · 只要编辑器就能写（最快）</h3>
+              <p>
+                VSCode 扩展里已经打包了 <code>colorlsp</code>、<code>colorc</code>、
+                <code>colorfmt</code>、<code>colortest</code>、<code>colorpkg</code>
+                与完整 runtime、标准库，装完即可获得语法高亮、实时诊断、补全、跳转与格式化。
+              </p>
+              <ol>
+                <li>安装 <a href="https://code.visualstudio.com/" target="_blank" rel="noreferrer">Visual Studio Code</a></li>
+                <li>从 <a href="https://github.com/colorful-lang/colorful-vscode/releases/latest" target="_blank" rel="noreferrer">发布页</a> 下载 <code>colorful-lang-0.1.0.vsix</code></li>
+                <li>安装扩展，然后重新加载窗口</li>
+              </ol>
+              <div class="code" style="margin-top: 16px">
+                <div class="code-head"><span class="name">终端</span></div>
+                <pre><code>code --install-extension colorful-lang-0.1.0.vsix --force
+<span class="tok-c"># 然后在 VSCode 里执行一次 Developer: Reload Window</span>
+</code></pre>
+              </div>
+              <p style="margin-top: 14px">
+                打开任意 <code>.cf</code> 文件：状态栏出现 <strong>Colorful</strong>，打字时错误即时标红。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>路线二 · Windows 上从源码构建</h3>
+              <p>需要 MSVC 的 C++ 生成工具，构建脚本会一次性编译编译器、runtime 与全部工具。</p>
+              <ol>
+                <li>安装 <a href="https://visualstudio.microsoft.com/visual-cpp-build-tools/" target="_blank" rel="noreferrer">Visual Studio 生成工具</a>（勾选「使用 C++ 的桌面开发」）</li>
+                <li>克隆仓库并运行构建脚本</li>
+              </ol>
+              <div class="code" style="margin-top: 16px">
+                <div class="code-head"><span class="name">命令提示符</span></div>
+                <pre><code>git clone https://github.com/colorful-lang/colorful.git
+cd colorful
+scripts\build-windows.bat
+
+<span class="tok-c"># 产物在 build\ 下：colorc.exe、colorlsp.exe、colorfmt.exe ...</span>
+</code></pre>
+              </div>
+            </article>
+
+            <article class="card">
+              <h3>路线三 · CMake 构建（跨平台）</h3>
+              <p>macOS 与 Linux 走这条路；Windows 同样适用。可选链接 LLVM 以获得进程内代码生成。</p>
+              <div class="code" style="margin-top: 14px">
+                <div class="code-head"><span class="name">终端</span></div>
+                <pre><code>cmake -S . -B build
+cmake --build build --config Release
+
+<span class="tok-c"># 产物：build/bin/{colorc,colorlsp,colorfmt,colortest,colorpkg}</span>
+</code></pre>
+              </div>
+              <p style="margin-top: 14px">
+                需要 <a href="https://cmake.org/download/" target="_blank" rel="noreferrer">CMake 3.20+</a>
+                与一个 C11/C++20 编译器。
+              </p>
+            </article>
+
+            <article class="card">
+              <h3>校验安装</h3>
+              <p>构建完成后，用仓库里的示例验证一遍流水线。</p>
+              <div class="code" style="margin-top: 14px">
+                <div class="code-head"><span class="name">终端</span></div>
+                <pre><code>build\colorc.exe examples\hello.cf -o build\hello.exe
+build\hello.exe
+
+build\colortest.exe --stdlib stdlib tests\e2e\test_core.cf
+</code></pre>
+              </div>
+              <p style="margin-top: 14px">
+                第一条命令编译并运行第一个程序，第二条运行端到端测试套件。
+              </p>
+            </article>
+          </div>
+
+          <div class="callout ok" style="margin-top: 26px">
+            <strong>只想先看看语言长什么样？</strong>
+            直接跳到 <a href="docs.html">快速开始</a>，那里有从零到跑通第一个程序的完整步骤、语言速览与标准库清单。
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="tools">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>工具链</h2>
+            <p>每个工具都能单独使用，也都能被编辑器与脚本调用。</p>
+          </div>
+          <div class="table-scroll">
+            <table>
+              <thead>
+                <tr>
+                  <th>工具</th>
+                  <th>作用</th>
+                  <th>常用命令</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td><code>colorc</code></td>
+                  <td>编译器：源码到原生可执行文件，可输出 C、LLVM IR 或直接运行</td>
+                  <td><code>colorc app.cf -o build/app</code></td>
+                </tr>
+                <tr>
+                  <td><code>colorlsp</code></td>
+                  <td>语言服务器：诊断、补全、悬停、跳转、引用、重命名、符号、签名帮助、格式化</td>
+                  <td><code>colorlsp --stdio</code></td>
+                </tr>
+                <tr>
+                  <td><code>colorfmt</code></td>
+                  <td>格式化：整文件或标准输入输出，可做检查模式</td>
+                  <td><code>colorfmt -i src</code></td>
+                </tr>
+                <tr>
+                  <td><code>colortest</code></td>
+                  <td>测试：发现 <code>test_*</code> 函数、编译驱动并运行</td>
+                  <td><code>colortest --json tests</code></td>
+                </tr>
+                <tr>
+                  <td><code>colorpkg</code></td>
+                  <td>包管理：脚手架、构建、运行、依赖与锁文件</td>
+                  <td><code>colorpkg init</code></td>
+                </tr>
+                <tr>
+                  <td><code>colorlib</code></td>
+                  <td>runtime 打包：静态库、动态库、头文件、字体与加密模块归档</td>
+                  <td><code>colorlib build --out lib</code></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </section>
+
+      <section class="section soft" id="next">
+        <div class="wrap">
+          <div class="section-head">
+            <h2>继续深入</h2>
+            <p>从零开始的教程、语言速览、标准库与工具参数都在文档里。</p>
+          </div>
+          <div class="grid cols-2">
+            <article class="card">
+              <h3>从零跑通第一个程序</h3>
+              <p>准备环境、安装工具链、写下 <code>hello.cf</code>、编译运行，一步步来。</p>
+              <p style="margin-top: 14px"><a class="btn btn-primary" href="docs.html#start">进入快速开始</a></p>
+            </article>
+            <article class="card">
+              <h3>语言速览与标准库</h3>
+              <p>类型、函数、record、protocol、异常、模块导入，以及 21 个标准库模块的用法。</p>
+              <p style="margin-top: 14px"><a class="btn btn-ghost" href="docs.html#language">查看语言速览</a></p>
+            </article>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap">
+        <span>© <span data-year>2026</span> Colorful Language Authors · MIT License</span>
+        <nav>
+          <a href="index.html">首页</a>
+          <a href="docs.html">快速开始</a>
+          <a href="https://github.com/colorful-lang/colorful" target="_blank" rel="noreferrer">语言仓库</a>
+          <a href="https://github.com/colorful-lang/colorful-vscode" target="_blank" rel="noreferrer">插件仓库</a>
+        </nav>
+      </div>
+    </footer>
+
+    <script src="assets/js/app.js" defer></script>
+  </body>
+</html>
