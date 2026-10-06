@@ -102,9 +102,15 @@ python -m http.server 8000
 - `https://github.com/colorful-lang/colorful-vscode` —— 插件仓库
 - `https://github.com/colorful-lang/colorful-lang.github.io` —— 本站仓库
 
-**建议**：在插件仓库发一个 Release，把构建好的 `colorful-lang-0.1.0.vsix`
-作为附件上传。这样首页与文档页的「下载插件」按钮（指向
-`.../releases/latest`）就能落到真实文件上。
+**下载链接**：首页与文档页的「下载插件」按钮直接指向一个文件地址，
+即语言仓库 Release 里的 `colorful-lang-0.1.0.vsix.zip`（内含 `.vsix`）：
+
+```
+https://github.com/colorful-lang/colorful/releases/download/v0.0.1/colorful-lang-0.1.0.vsix.zip
+```
+
+发版时把该 zip 作为附件上传到对应 tag；标签名变了就要同步改这三处链接
+（`index.html` 两处、`docs.html` 两处）。
 
 ---
 
